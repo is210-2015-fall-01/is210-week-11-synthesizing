@@ -62,7 +62,28 @@ class ChessPiece(object):
             return tupval
         else:
             return False
+
+class Rook(ChessPiece):
+
+    prefix = 'R'
+
+
+    def is_legal_move(self, position):
+        islegal = ChessPiece.is_legal_move(self, position)
+        if islegal:
+            xmove = self.position[0]
+            ymove = self.position[1]
+            if xmove != position[0]:
+                if ymove == position[1]:
+                    return True
+            elif ymove != position[1]:
+                if xmove == position[0]:
+                    return True
+            else:
+                return True
+
             
+
             
             
             
