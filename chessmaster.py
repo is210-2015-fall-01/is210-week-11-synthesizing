@@ -76,3 +76,4 @@ class ChessPiece(object):
             return final_tup
         else:
             return False
+
