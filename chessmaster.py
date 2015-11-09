@@ -76,11 +76,37 @@ class Rook(ChessPiece):
             if xmove != position[0]:
                 if ymove == position[1]:
                     return True
+                else:
+                    return False
             elif ymove != position[1]:
                 if xmove == position[0]:
                     return True
+                else:
+                    return False
             else:
                 return True
+        else:
+            return False
+
+class Bishop(ChessPiece):
+
+    prefix = 'B'
+
+
+    def is_legal_move(self, position):
+        oldcoordinates = self.algebraic_to_numeric(self.position)
+        newcoordinates = self.algebraic_to_numeric(position)
+        islegal = ChessPiece.is_legal_move(self, position)
+        if islegal:
+            xdistance = int(newcoordinates[0] - oldcoordinates[0])
+            ydistance = int(newcoordinates[1] - oldcoordinates[1])
+            if abs(xdistance) == abs(ydistance):
+                return True
+        else:
+            return False
+           
+
+
 
             
 
