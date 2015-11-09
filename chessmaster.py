@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Wk11 synthesizing task01 - chessmaster!"""
+"""Wk11 synthesizing task 1 thru 5 - chessmaster!"""
 
 import time
 
