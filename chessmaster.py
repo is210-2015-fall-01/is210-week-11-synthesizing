@@ -180,7 +180,7 @@ class Bishop(ChessPiece):
         old = self.algebraic_to_numeric(position)
         new = self.algebraic_to_numeric(position)
         if ChessPiece.is_legal_move(self, position):
-            if (old[0] + new[0]) == (old[1] + new[1]):
+            if (old[0] + new[0]) % (old[1] + new[1]) is 0:
                 return True
         else:
             return False
