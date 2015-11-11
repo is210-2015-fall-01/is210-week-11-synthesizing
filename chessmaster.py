@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Chess Game"""
+ 
+import time
+ 
+ 
 class ChessPiece(object):
      """Let's play the game.
  
@@ -67,7 +74,7 @@ class ChessPiece(object):
              return True
  
      def move(self, position):
-         """Let's move this piece.
+         """Moves the piece from one tile to another.
  
          Args:
              None
@@ -179,3 +186,5 @@ class Bishop(ChessPiece):
                  return True
          else:
              return False
+         
+
