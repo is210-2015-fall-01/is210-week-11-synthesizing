@@ -14,10 +14,10 @@ class ChessPiece(object):
         """A constructor for ChessPiece() class.
 
         Args:
-            position:??
+            position:
 
         Attributes:
-            position:??
+            legal_move_test = ChessPiece.is_legal_move(self, position)
 
         """
         legal_move_test = ChessPiece.is_legal_move(self, position)
@@ -35,7 +35,7 @@ class ChessPiece(object):
             tile(string): An algebraic position on the chessboard.
 
         Attributes:
-            tile(string): An algebraic position on the chessboard.
+            valid_tile = True
 
         Returns:
             This method returns a tuple containing numeric positions.
@@ -111,7 +111,7 @@ class ChessPiece(object):
             position:
 
         Attributes:
-            position:
+            legal_move = self.is_legal_move(position)
 
         Returns:
             It returns a tuple, containing 2 strings and a timestamp.
