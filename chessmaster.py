@@ -1,166 +1,307 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-""" A chess game """
+"""Chess"""
+
 
 import time
 
 
 class ChessPiece(object):
-    """Moving piece in a game of chess."""
+    """ object of chessPiece class
+    attribute:
+        prefix (string): by default, set as an empty string
+    """
+
     prefix = ''
 
     def __init__(self, position):
-        """An instance.
-        Args:
-            position: an alphanumeric position on the board.
-        Attribute:
-            prefix: an empty string by default.
+        """ chessPiece construct
+        args:
+            position (string):
+                stores the tile notation of its current position (eg, 'a8')
+            moves Lists):
+                list that stores tuples of information about each move
+         attributes:
+            position (string):
+                stores the tile notation of its current position (eg, 'a8')
+            moves Lists):
+                list that stores tuples of information about each move
+            return:
+                move(lists):
+                    lists of the postion of each move
+            example
+                >>> piece = ChessPiece('a1')
+                >>> piece.position
+                'a1'
         """
-        if not ChessPiece.is_legal_move(self, position):
-            excep = '{} is not a legal start position'
-            raise ValueError(excep.format(position))
-        else:
+
+        if ChessPiece.is_legal_move(self, position):
             self.position = position
+
             self.moves = []
+        else:
+            excep = '`{}` is not a legal start position'
+            raise ValueError(excep.format(position))
 
     def algebraic_to_numeric(self, tile):
-        """A tile as a two value tuple used as position.
-        Arg:
-            tile: tuple consisting two value of the position on the board.
-        Returns:
-            Converts alpha-numeric characters into coordinates.
-            Returns invalid coordinates.
-        Example:
-            >>> piece = ChessPiece('a1')
-            >>> piece.position
-            'a1'
+        """class function that takes a single string argument, tile, and convert
+           it to a tuple with two values, a 0-based y-coordinate and a 0-based
+           x-coordinate
+        args:
+            tile(string): string to be converts it to a tuple with two values,
+                          a 0-based y-coordinate and a 0-based x-coordinate.
+        attributes:
+            tile(string): string to be converts it to a tuple with two values,
+                          a 0-based y-coordinate and a 0-based x-coordinate.
+        return:
+            tuples ofalid move or none if not invalid
+        example:
             >>> piece.algebraic_to_numeric('e7')
             (4,6)
             >>> piece.algebraic_to_numeric('j9')
             None
+            >>> piece.move('j9')
+            False
         """
-        x_axis = 'abcdefgh'
-        y_axis = [1, 2, 3, 4, 5, 6, 7, 8]
-        if tile[0] in x_axis and int(tile[1]) in y_axis:
-            return (x_axis.find(tile[0]), (int(tile[1]) - 1))
+
+        newtile = []
+        algebraicnotation = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+        numericnotation = range(1, 9)
+
+        for numeric in numericnotation:
+            for algebraic in algebraicnotation:
+                newtile.append(algebraic + str(numeric))
+        if tile in newtile:
+            x_cord = algebraicnotation.index(tile[0])
+            y_cord = numericnotation.index(int(tile[1]))
+            return x_cord, y_cord
         else:
             return None
 
     def is_legal_move(self, position):
-        """To test if new position is legal to move.
-        Args:
-            position: an allowed position on the board.
-        Attribute:
-            newpos: a new position on the board.
-        Returns:
-            Returns 'True' for a legal move; and 'False' for not a legal move.
-        Example:
-            >>> piece.move('j9')
-            False
+        """ a fuction that test if the suggested move is a legal move
+        args:
+            postion(string): the  algebraic notation of the new position to
+                             which this piece should be moved
+            return (bool):
+                Return True if the move is legal and False if it is not
+            example:
+            piece = ChessPiece('e91')
+            Traceback (most recent call last):
+            File "<pyshell#216>", line 1, in <module>
+            piece = ChessPiece('e91')
+            raise ValueError(excep.format(position))
+            ValueError: `e91` is not a legal start position
+            example:
+            >>> piece = ChessPiece('e1')
+            >>> piece.move('e7')
+            [('e1', 'e7', 1429395759.478843)]
         """
-        newpos = self.algebraic_to_numeric
-        if newpos(position):
-            return True
-        else:
+
+        if self.algebraic_to_numeric(position) is None:
+
             return False
+        else:
+            return True
 
     def move(self, position):
-        """Pieces to move.
-        Args:
-            position: an allowed position on the board.
-        Attribute:
-            newpos: a new position on the board.
-        Return:
-            Returns a legal move on the board.
-        Examples:
-            >>> piece.move('e7')
-            ('a1', 'e7', 1413252815.610075)
-            >>> piece.position
-            'e7'
+        """a function to actually move our piece.
+        args:
+            the algebraic notation of the new position to be moved.
+        return:
+            Return the above tuple is position is a valid move or
+            If it is not legal, return False
         """
-        newpos = self.is_legal_move(position)
-        if newpos:
-            tup = (self.prefix + self.position,
-                   self.prefix + position, time.time())
-            self.moves.append(tup)
+
+        if self.is_legal_move(position):
+
+            oldposition = self.prefix + self.position
+            newposition = self.prefix + position
+            moves = ((oldposition, newposition, time.time()))
+            self.moves.append(moves)
             self.position = position
-            return tup
+            print "in move"
+            print self.position
+           # position = self.prefix + position
+            return moves
         else:
             return False
 
 
 class Rook(ChessPiece):
-    """A child class of ChessPiece."""
+    """  Rook class a subclasses of ChessPiece"
+    args:
+        the algebraic notation of the new position to be moved.attributes:
+        prefix (string): first character of the chess pieces
+    """
+
     prefix = 'R'
 
     def __init__(self, position):
-        """An override instance.
-        Args:
-            position: an alphanumeric position on the board.
-        Attribute:
-            prefix: A(str) by default 'R'.
-        """
+
         ChessPiece.__init__(self, position)
 
     def is_legal_move(self, position):
-        """Constructor for Rook.
-        Args:
-            position: an allowed position on the board.
-        Returns:
-            Checks if move does not work.
-        Examples:
-            >>> rook = Rook('a1')
-            >>> rook.prefix
-            'R'
-            >>> rook.move('b2')
-            False
-            >>> rook.move('h1')
-            ('Ra1', 'Rh1', 1413252817.89340)
-        """
+
+        rook_new_position = self.algebraic_to_numeric(position)
+        rook_old_position = self.algebraic_to_numeric(self.position)
+
         if ChessPiece.is_legal_move(self, position):
-            if self.position[0] is position[0]:
-                if int(self.position[1]) != int(position[1]):
-                    return True
-            else:
-                if int(self.position[1]) == int(position[1]):
-                    return True
+            x_move = abs(rook_new_position[0] == rook_old_position[0])
+            y_move = abs(rook_new_position[1] == rook_old_position[1])
+            if y_move or x_move:
+                return True
+
         else:
             return False
 
 
 class Bishop(ChessPiece):
-    """A child clas of ChessPiece.
+    """  Bishop class a subclasses of ChessPiece"
+    attributes:
+        prefix (string): first character of the chess pieces
     """
+
     prefix = 'B'
 
     def __init__(self, position):
-        """An override instance.
-        Args:
-            position: an alphanumeric position on the board.
-        Attribute:
-            prefix: A(str) by default 'B'.
-        """
+
         ChessPiece.__init__(self, position)
 
     def is_legal_move(self, position):
-        """Constructor for Bishop.
-        Args:
-            position: an allowed position on the board.
-        Returns:
-            A coordinate value if the move is legal or 'False' if it's not.
-        Examples:
-            >>> bishop = Bishop('a1')
-            >>> bishop.prefix
-            'B'
-            >>> bishop.move('a2')
-            False
-            >>> bishop.move('c3')
-            ('Ba1', 'Bc1', 1413252817.89340)
-        """
-        old = self.algebraic_to_numeric(position)
-        new = self.algebraic_to_numeric(position)
+        bishop_new_position = self.algebraic_to_numeric(position)
+
+        bishop_old_position = self.algebraic_to_numeric(self.position)
+        x_move_diff = abs(bishop_old_position[0] - bishop_new_position[0])
+        y_move_diff = abs(bishop_old_position[1] - bishop_new_position[1])
         if ChessPiece.is_legal_move(self, position):
-            if (old[0] + new[0]) == (old[1] + new[1]):
+            if x_move_diff == y_move_diff:
                 return True
         else:
             return False
+
+
+class King(ChessPiece):
+    """ King class, a  subclass of ChessPiece
+    attributes:
+        prefix (string): first character of the chess pieces
+    """
+    prefix = 'K'
+
+    def __init__(self, position):
+        """ king constructor
+        args:
+        the algebraic notation of the new position to be moved.
+        """
+
+        ChessPiece.__init__(self, position)
+
+    def is_legal_move(self, position):
+        """ a fuction that test if the king suggested move is a legal move
+        args:
+            postion(string): the  algebraic notation of the new position to
+                             which this piece should be moved
+            return (bool):
+                Return True if the move is legal and False if it is not
+        example:
+        >>> king = King('a1')
+        >>> king.prefix
+        'K'
+        >>> king.move('a3')
+        False
+        >>> king.move('b1')
+        ('Ka1', 'Kb1', 1429497441.23176)
+        >>> king.move('a2')
+        ('Kb1', 'Ka2', 1429497448.906799)
+        """
+
+        king_new_position = self.algebraic_to_numeric(position)
+
+        king_old_position = self.algebraic_to_numeric(self.position)
+
+        x_move_diff = abs(king_new_position[0] - king_old_position[0])
+        y_move_diff = abs(king_new_position[1] - king_old_position[1])
+        if ChessPiece.is_legal_move(self, position):
+
+            if x_move_diff == 0 and y_move_diff == 1:
+                return True
+            elif x_move_diff == 1 and y_move_diff == 0:
+                return True
+            elif x_move_diff == 1 and y_move_diff == 1:
+                return True
+
+        else:
+            return False
+
+
+class ChessMatch(object):
+    """match class declaratioon
+    attributes:
+        None
+    """
+
+    def __init__(self, pieces=None):
+        """Chassmatch constructor
+        args:
+            piece(lists): a dict of pieces keyed by their positions on the board
+            log (list): log lits of game
+        return:
+        """
+
+        if pieces is None:
+            self.reset()
+        else:
+            self.pieces = pieces
+            self.log = []
+
+    def reset(self):
+        """ a funct that resets the match log to an empty list and places
+            our pieces back at their starting positions:
+        return:
+            dict of piece current position in Full Notation is the key
+        exampe:
+            >>> match.reset()
+            >>> len(match)
+            0
+            >>> len(match.pieces)
+            10
+        """
+        self.log = []
+        self.pieces = {'Ra1': Rook('a1'),
+                       'Rh1': Rook('h1'),
+                       'Ra8': Rook('a8'),
+                       'Rh8': Rook('h8'),
+                       'Bc1': Bishop('c1'),
+                       'Bf1': Bishop('f1'),
+                       'Bc8': Bishop('c8'),
+                       'Bf8': Bishop('f8'),
+                       'Ke1': King('e1'),
+                       'Ke8': King('e8')}
+
+        return self.pieces
+
+
+def move(self, piece, position):
+    """
+    args:
+        pieces(dicts): The name of the piece in Full Notation
+        position(string): The destination coordinate in short notation(eg,'a7')
+    return:
+        returns False, If a piece is unable to move to the coordinate
+    example:
+        >>> match.move('Ke1', 'e2')
+        >>> match.pieces
+        {'Ke2': <__main__.King object at 0x70000000000>, 'Ke8':
+        <__main__.King object at 0x7000000000a>}
+    """
+
+    ChessPiece.move.__init__(self)
+    if piece in self.pieces:
+        chesspiece = self.pieces[piece]
+        moved = chesspiece.move(position)
+        self.log.append(moved)
+        self.pieces.pop(piece)
+        self.pieces.update({moved[1]: chesspiece})
+
+
+def __len__(self):
+
+    return len(self.pieces)
